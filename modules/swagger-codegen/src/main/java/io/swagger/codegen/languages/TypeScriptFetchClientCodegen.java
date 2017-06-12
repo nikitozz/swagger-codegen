@@ -17,6 +17,7 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
 
     protected String npmName = null;
     protected String npmVersion = "1.0.0";
+    protected Boolean supportsTS22 = false;
 
     public TypeScriptFetchClientCodegen() {
         super();
@@ -29,6 +30,7 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
         embeddedTemplateDir = templateDir = "TypeScript-Fetch";
         this.cliOptions.add(new CliOption(NPM_NAME, "The name under which you want to publish generated npm package"));
         this.cliOptions.add(new CliOption(NPM_VERSION, "The version of your npm package"));
+        this.cliOptions.add(new CliOption(CodegenConstants.SUPPORTS_TS22, CodegenConstants.SUPPORTS_TS22_DESC).defaultValue("false"));
     }
 
     @Override
@@ -50,6 +52,11 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
 
         if (additionalProperties.containsKey(NPM_VERSION)) {
             this.setNpmVersion(additionalProperties.get(NPM_VERSION).toString());
+        }
+
+        if (additionalProperties.containsKey(CodegenConstants.SUPPORTS_TS22)) {
+            setSupportsTS22(Boolean.valueOf(additionalProperties.get(CodegenConstants.SUPPORTS_TS22).toString()));
+            additionalProperties.put("supportsTS22", getSupportsTS22());
         }
     }
 
@@ -77,6 +84,14 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
 
     public void setNpmVersion(String npmVersion) {
         this.npmVersion = npmVersion;
+    }
+
+    public Boolean getSupportsTS22() {
+        return supportsTS22;
+    }
+
+    public void setSupportsTS22(Boolean value) {
+        this.supportsTS22 = value;
     }
 
     @Override

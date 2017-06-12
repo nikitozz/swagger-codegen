@@ -2,7 +2,9 @@
 import * as querystring from "querystring";
 import * as url from "url";
 
+{{^supportsTS22}}
 import * as isomorphicFetch from "isomorphic-fetch";
+{{/supportsTS22}}
 {{^supportsES6}}
 import * as assign from "core-js/library/fn/object/assign";
 {{/supportsES6}}
@@ -21,12 +23,12 @@ export interface FetchArgs {
 
 export class BaseAPI {
     basePath: string;
-    fetch: FetchAPI;
+    fetchApi: FetchAPI;
     public configuration: Configuration;
 
-    constructor(fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH, configuration: Configuration = new Configuration()) {
+    constructor(fetchApi: FetchAPI = {{#supportsTS22}}fetch{{/supportsTS22}}{{^supportsTS22}}isomorphicFetch{{/supportsTS22}}, basePath: string = BASE_PATH, configuration: Configuration = new Configuration()) {
         this.basePath = basePath;
-        this.fetch = fetch;
+        this.fetchApi = fetchApi;
         this.configuration = configuration;
     }
 };
@@ -182,10 +184,10 @@ export const {{classname}}Fp = {
      * {{notes}}{{/notes}}{{#allParams}}
      * @param {{paramName}} {{description}}{{/allParams}}
      */
-    {{nickname}}({{#hasParams}}params: { {{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}; {{/allParams}} }, {{/hasParams}}{{#hasAuthMethods}}configuration: Configuration, {{/hasAuthMethods}}options: any = {}): (fetch: FetchAPI, basePath?: string) => Promise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}any{{/returnType}}> {
+    {{nickname}}({{#hasParams}}params: { {{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}; {{/allParams}} }, {{/hasParams}}{{#hasAuthMethods}}configuration: Configuration, {{/hasAuthMethods}}options: any = {}): (fetchApi: FetchAPI, basePath?: string) => Promise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}any{{/returnType}}> {
         const fetchArgs = {{classname}}FetchParamCreator.{{nickname}}({{#hasParams}}params, {{/hasParams}}{{#hasAuthMethods}}configuration, {{/hasAuthMethods}}options);
-        return (fetch: FetchAPI = isomorphicFetch, basePath: string = BASE_PATH) => {
-            return fetch(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
+        return (fetchApi: FetchAPI = {{#supportsTS22}}fetch{{/supportsTS22}}{{^supportsTS22}}isomorphicFetch{{/supportsTS22}}, basePath: string = BASE_PATH) => {
+            return fetchApi(basePath + fetchArgs.url, fetchArgs.options).then((response) => {
                 if (response.status >= 200 && response.status < 300) {
                     return response{{#returnType}}.json(){{/returnType}};
                 } else {
@@ -209,7 +211,7 @@ export class {{classname}} extends BaseAPI {
      * @param {{paramName}} {{description}}{{/allParams}}
      */
     {{nickname}}({{#hasParams}}params: { {{#allParams}} {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};{{/allParams}} }, {{/hasParams}}options: any = {}) {
-        return {{classname}}Fp.{{nickname}}({{#hasParams}}params, {{/hasParams}}{{#hasAuthMethods}}this.configuration, {{/hasAuthMethods}}options)(this.fetch, this.basePath);
+        return {{classname}}Fp.{{nickname}}({{#hasParams}}params, {{/hasParams}}{{#hasAuthMethods}}this.configuration, {{/hasAuthMethods}}options)(this.fetchApi, this.basePath);
     }
 {{/operation}}
 };
@@ -218,7 +220,7 @@ export class {{classname}} extends BaseAPI {
  * {{classname}} - factory interface{{#description}}
  * {{&description}}{{/description}}
  */
-export const {{classname}}Factory = function (fetch?: FetchAPI, basePath?: string) {
+export const {{classname}}Factory = function (fetchApi?: FetchAPI, basePath?: string) {
     return {
 {{#operation}}
         /** {{#summary}}
@@ -227,7 +229,7 @@ export const {{classname}}Factory = function (fetch?: FetchAPI, basePath?: strin
          * @param {{paramName}} {{description}}{{/allParams}}
          */
         {{nickname}}({{#hasParams}}params: { {{#allParams}} {{paramName}}{{^required}}?{{/required}}: {{{dataType}}};{{/allParams}} }, {{/hasParams}}{{#hasAuthMethods}}configuration: Configuration, {{/hasAuthMethods}}options: any = {}) {
-            return {{classname}}Fp.{{nickname}}({{#hasParams}}params, {{/hasParams}}{{#hasAuthMethods}}configuration, {{/hasAuthMethods}}options)(fetch, basePath);
+            return {{classname}}Fp.{{nickname}}({{#hasParams}}params, {{/hasParams}}{{#hasAuthMethods}}configuration, {{/hasAuthMethods}}options)(fetchApi, basePath);
         },
 {{/operation}}
     };
