@@ -19,6 +19,7 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
     protected String npmName = null;
     protected String npmVersion = "1.0.0";
     protected Boolean supportsTS22 = false;
+    protected Boolean useCustomAssignPolyfill = false;
 
     public TypeScriptFetchClientCodegen() {
         super();
@@ -32,20 +33,12 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
         this.cliOptions.add(new CliOption(NPM_NAME, "The name under which you want to publish generated npm package"));
         this.cliOptions.add(new CliOption(NPM_VERSION, "The version of your npm package"));
         this.cliOptions.add(new CliOption(CodegenConstants.SUPPORTS_TS22, CodegenConstants.SUPPORTS_TS22_DESC).defaultValue("false"));
+        this.cliOptions.add(new CliOption(CodegenConstants.USE_CUSTOM_ASSIGN_POLYFILL, CodegenConstants.USE_CUSTOM_ASSIGN_POLYFILL_DESC).defaultValue("false"));
     }
 
     @Override
     public void processOpts() {
         super.processOpts();
-        supportingFiles.add(new SupportingFile("api.mustache", "", "api.ts"));
-        supportingFiles.add(new SupportingFile("git_push.sh.mustache", "", "git_push.sh"));
-        supportingFiles.add(new SupportingFile("README.md", "", "README.md"));
-        supportingFiles.add(new SupportingFile("package.json.mustache", "", "package.json"));
-        supportingFiles.add(new SupportingFile("typings.json.mustache", "", "typings.json"));
-        supportingFiles.add(new SupportingFile("tsconfig.json.mustache", "", "tsconfig.json"));
-        supportingFiles.add(new SupportingFile("tslint.json.mustache", "", "tslint.json"));
-        supportingFiles.add(new SupportingFile("gitignore", "", ".gitignore"));
-        supportingFiles.add(new SupportingFile("configuration.mustache", "", "configuration.ts"));
 
         if(additionalProperties.containsKey(NPM_NAME)) {
             this.setNpmName(additionalProperties.get(NPM_NAME).toString());
@@ -59,6 +52,23 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
             setSupportsTS22(Boolean.valueOf(additionalProperties.get(CodegenConstants.SUPPORTS_TS22).toString()));
             additionalProperties.put("supportsTS22", getSupportsTS22());
         }
+
+        if (additionalProperties.containsKey(CodegenConstants.USE_CUSTOM_ASSIGN_POLYFILL)) {
+            setUseCustomAssignPolyfill(Boolean.valueOf(additionalProperties.get(CodegenConstants.USE_CUSTOM_ASSIGN_POLYFILL).toString()));
+            additionalProperties.put("useCustomAssignPolyfill", getUseCustomAssignPolyfill());
+        }
+
+        supportingFiles.add(new SupportingFile("api.mustache", "", "api.ts"));
+        supportingFiles.add(new SupportingFile("git_push.sh.mustache", "", "git_push.sh"));
+        supportingFiles.add(new SupportingFile("README.md", "", "README.md"));
+        supportingFiles.add(new SupportingFile("package.json.mustache", "", "package.json"));
+        if (!this.supportsTS22) {
+            supportingFiles.add(new SupportingFile("typings.json.mustache", "", "typings.json"));
+        }
+        supportingFiles.add(new SupportingFile("tsconfig.json.mustache", "", "tsconfig.json"));
+        supportingFiles.add(new SupportingFile("tslint.json.mustache", "", "tslint.json"));
+        supportingFiles.add(new SupportingFile("gitignore", "", ".gitignore"));
+        supportingFiles.add(new SupportingFile("configuration.mustache", "", "configuration.ts"));
     }
 
     @Override
@@ -93,6 +103,14 @@ public class TypeScriptFetchClientCodegen extends AbstractTypeScriptClientCodege
 
     public void setSupportsTS22(Boolean value) {
         this.supportsTS22 = value;
+    }
+
+    public Boolean getUseCustomAssignPolyfill() {
+        return useCustomAssignPolyfill;
+    }
+
+    public void setUseCustomAssignPolyfill(Boolean value) {
+        this.useCustomAssignPolyfill = value;
     }
 
     @Override

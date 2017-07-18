@@ -1,26 +1,30 @@
 {
   "name": "{{#npmName}}{{{npmName}}}{{/npmName}}{{^npmName}}typescript-fetch-api{{/npmName}}",
   "version": "{{#npmVersion}}{{{npmVersion}}}{{/npmVersion}}{{^npmVersion}}0.0.0{{/npmVersion}}",
-  "license": "Unlicense",
+  "license": "Unlicensed",
   "main": "./dist/api.js",
   "browser": "./dist/api.js",
   "typings": "./dist/api.d.ts",
   "dependencies": {
-    {{^supportsES6}}"core-js": "^2.4.0"{{^supportsTS22}},{{/supportsTS22}}{{/supportsES6}}
+    {{^supportsES6}}{{^useCustomAssignPolyfill}}"core-js": "^2.4.0"{{^supportsTS22}},{{/supportsTS22}}{{/useCustomAssignPolyfill}}{{/supportsES6}}
     {{^supportsTS22}}"isomorphic-fetch": "^2.2.1"{{/supportsTS22}}
   },
   "scripts" : {
-    "prepublish" : "typings install && tsc", 
+    "prepublish" : "{{^supportsTS22}}typings install && {{/supportsTS22}}tsc", 
     "test": "tslint api.ts"
   },
   "devDependencies": {
     "tslint": "^3.15.1",
     {{#supportsTS22}}
+    {{^supportsES6}}{{^useCustomAssignPolyfill}}
+    "@types/core-js": "^0.9.41",
+    {{/useCustomAssignPolyfill}}{{/supportsES6}}
     "typescript": "^2.2.1",
+    "@types/node": "^7.0.31"
     {{/supportsTS22}}
     {{^supportsTS22}}
     "typescript": "^1.8.10",
-    {{/supportsTS22}}
     "typings": "^1.0.4"
+    {{/supportsTS22}}
   }
 }

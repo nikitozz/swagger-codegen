@@ -5,13 +5,15 @@
     "module": "commonjs",
     "noImplicitAny": true,
     "outDir": "dist",
-    "rootDir": "."
+    "rootDir": "."{{#supportsTS22}},
+    "lib": ["es6", "dom"]{{/supportsTS22}}
   },
   "exclude": [
     "dist",
-    "node_modules",
+    "node_modules"{{^supportsTS22}},
     "typings/browser",
     "typings/main",
     "typings/main.d.ts"
+    {{/supportsTS22}}
   ]
 }

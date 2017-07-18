@@ -173,6 +173,9 @@ public class CodegenConstants {
     public static final String SUPPORTS_TS22 = "supportsTS22";
     public static final String SUPPORTS_TS22_DESC = "Generate code that supports TypeScript 2.2.1.";
 
+    public static final String USE_CUSTOM_ASSIGN_POLYFILL = "useCustomAssignPolyfill";
+    public static final String USE_CUSTOM_ASSIGN_POLYFILL_DESC = "A custom Object.assign polyfill will be used in JavaScript/TypeScript code";
+
     public static final String EXCLUDE_TESTS = "excludeTests";
     public static final String EXCLUDE_TESTS_DESC = "Specifies that no tests are to be generated.";
 

@@ -31,7 +31,9 @@ public class TypeScriptFetchClientOptionsTest extends AbstractOptionsTest {
             times = 1;
             clientCodegen.setSupportsES6(TypeScriptFetchClientOptionsProvider.SUPPORTS_ES6_VALUE);
             times = 1;
-            clientCodegen.setSupportsES6(TypeScriptFetchClientOptionsProvider.SUPPORTS_TS22_VALUE);
+            clientCodegen.setSupportsTS22(TypeScriptFetchClientOptionsProvider.SUPPORTS_TS22_VALUE);
+            times = 1;
+            clientCodegen.setUseCustomAssignPolyfill(TypeScriptFetchClientOptionsProvider.USE_CUSTOM_ASSIGN_POLYFILL_VALUE);
             times = 1;
         }};
     }
